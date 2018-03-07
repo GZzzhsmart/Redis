@@ -1,0 +1,22 @@
+1、下载安装redis
+2、建立一个redis-cluster的目录，用于存储集群节点文件
+3、复制6份redis的安装目录到redis-cluster目录中，每一个按照端口号来命名目录
+4、每一个节点都需要修改配置文件
+	1）修改端口号
+	2）cluster-enabled yes
+	3）cluster-config-file nodes-6379.conf
+	4）cluster-node-timeout 15000
+	5）appendonly yes
+5、下载安装Ruby
+	安装好后会出现cmd命令提示符，直接按回车键
+6、(可选)进入到redis-cluster中的第一个节点
+	gem install redis
+7、启动所有redis-cluster中的服务器
+8、需要下载redis的linux版本，从此版本中获取redis-trib.rb，拷贝到第一个节点的redis安装目录中
+9、cmd执行以下命令来启动redis集群
+	ruby redis-trib.rb create --replicas 1 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384 127.0.0.1:6385
+	
+	出现确认提示后，输入yes
+	
+10、使用客户端工具连接集群
+	redis-cli -c -p 端口号
