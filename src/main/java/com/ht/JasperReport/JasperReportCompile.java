@@ -3,7 +3,6 @@ package com.ht.JasperReport;
 import com.ht.bean.Sale;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import java.util.*;
 
 public class JasperReportCompile {
@@ -28,6 +27,7 @@ public class JasperReportCompile {
             e.printStackTrace();
         }
     }
+
 
     private static List<Sale> getSaleList(){
         List<Sale> saleList = new ArrayList <Sale>();

@@ -6,10 +6,8 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class RedisService {
@@ -17,6 +15,7 @@ public class RedisService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    //通过id查询
     public String getById(int id) {
         // 查找用户
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
@@ -25,13 +24,14 @@ public class RedisService {
             System.out.println("从缓存中拿数据");
             return value;
         } else {
-            // 去数据库里拿
+            // 去数据库里取数据
             String a = "test";
             valueOperations.set(id + "", a);
             return a;
         }
     }
 
+    //列出所有的数据
     public List<User> listAll() {
         ListOperations<String, User> listOperations = redisTemplate.opsForList();
         List<User> userList = listOperations.range("list_user", 0, 20);

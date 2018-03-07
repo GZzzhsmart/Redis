@@ -15,5 +15,6 @@ public class RedisStringJava {
         jedis.set("runoobkey","www.runoob.com");
         //获取存储的数据并输出
         System.out.println("redis存储的字符串为："+jedis.get("runoobkey"));
+
     }
 }

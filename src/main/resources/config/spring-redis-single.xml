@@ -33,22 +33,23 @@
     <!-- 处理缓存数据的模板类 -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory">
+        <!-- string类型 配置key的序列化方法 -->
         <property name="keySerializer">
             <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+        </property>
+        <!-- string类型的Value的序列化方法 -->
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
         </property>
         <property name="hashKeySerializer">
             <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
         </property>
-        <property name="valueSerializer">
-            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
-        </property>
         <property name="hashValueSerializer">
             <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
         </property>
-
     </bean>
 
-    <!-- 处理字符串的模板类 -->
+    <!-- 专门处理字符串的模板类，自己默认的序列化方法 -->
     <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" />
 

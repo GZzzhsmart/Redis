@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="canonical" href="http://blog.csdn.net/u013132051/article/details/53765344"/>
+
+
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="alternate" media="handheld" href="#"/>
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+
+    <title>Redis集群与spring的整合 - 烟花散尽的专栏
+        - CSDN博客</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description"
+          content="上一篇详细的赘述了Redis的curd操作及集群的搭建。下面我们开始将他整合到我们实际的项目中去。我的项目采用的是标准的ssm框架，ssm框架这里不说，直接开始整合。首先在maven管理中将我们的jar包引入                                org.springframe"/>
+
+    <meta name="keywords" content="redis,集群,spring"/>
+
+
+    <script src="http://static.blog.csdn.net/scripts/blog_static_head.min.js" type="text/javascript"></script>
+
+
+    <!--new top-->
+
+
+    <!--new top-->
+
+    <!-- ad begin -->
+
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/skin-yellow/css/style.css?v=1.1"/>
+
+
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/u013132051/rss/list"/>
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico"/>
+    <link type="text/css" rel="stylesheet"
+          href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default_big.css"/>
+
+
+    <link href="http://c.csdnimg.cn/blog/csdn_public_blog_detail.min.css" type="text/css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="http://static.blog.csdn.net/css/csdn_blog_detail.min.css"/>
+
+
+    <!-- 请置于所有广告位代码之前 -->
+    <script src="http://dup.baidustatic.com/js/ds.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="tracking-ad" data-view="true" data-mod="ad_popu_72" data-mtp="62" data-order="40"
+     data-con="ad_content_2072">
+    <script id="popuLayer_js_q" src="http://ads.csdn.net/js/popuLayer.js" defer="defer" type="text/javascript"></script>
+    <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+        <div class="J_close layer_close"
+             style="display:;background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">
+            关闭
+        </div><!-- 广告占位容器 -->
+        <div id="cpro_u2895327">
+            <!-- 投放代码 -->
+            <script src="http://dup.baidustatic.com/js/ds.js"></script>
+            <!-- 广告位：PC端-博客详情页右侧弹窗-300*250 -->
+            <script>
+                (function () {
+                    var s = "_" + Math.random().toString(36).slice(2);
+                    document.write('<div id="' + s + '"></div>');
+                    (window.slotbydup = window.slotbydup || []).push({
+                        id: '4740870',
+                        container: s,
+                        size: '300,250',
+                        display: 'inlay-fix'
+                    });
+                })();
+            </script>
+        </div>
+    </div>
+    <script>  document.getElementById("popuLayer_js_q").onload = function () {
+        var styObjd = styObj = {width: "300px", "height": parseInt(250) + 28};
+        window.CSDN.Layer.PopuLayer("#layerd", {
+            storageName: "layerd",
+            styleObj: styObjd,
+            total: 50,
+            expoire: 1000 * 60
+        });
+    }</script>
+
+
+</div>
+
+<!-- 广告位开始 -->
+
+<!-- 广告位结束 -->
+
+
+<!--new top-->
+<script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black"
+        src="http://c.csdnimg.cn/public/common/toolbar/js/html.js" type="text/javascript"></script>
+<!--new top-->
+<div id="container">
+    <div id="header">
+        <div class="header">
+            <div id="blog_title">
+                <h2>
+                    <a href="http://blog.csdn.net/u013132051">烟花散尽的专栏</a></h2>
+                <h3>每个人都有自己的特长，选对了团队才会发挥出自己的超长价值 一起在编程的世界畅游吧</h3>
+                <div class="clear">
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+
+
+        </div>
+    </div>
+    <div id="navigator">
+        <div class="navigator_bg">
+        </div>
+        <div class="navigator">
+            <ul>
+                <li id="btnContents"><a href="http://blog.csdn.net/u013132051?viewmode=contents"><span
+                        onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/u013132051?viewmode=list"><span
+                        onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/u013132051/rss/list"><span
+                        onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>
+
+
+            </ul>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var username = "u013132051";
+        var _blogger = username;
+        var blog_address = "http://blog.csdn.net/u013132051";
+        var static_host = "http://static.blog.csdn.net";
+        var currentUserName = "";
+    </script>
+
+    <div id="body">
+        <div id="main">
+            <div class="main">
+                <div class="ad_class">
+                    <div class="notice tracking-ad" data-mod='popu_3'>
+
+
+                        <a href="http://blog.csdn.net/epubit17/article/details/78210459">
+                            <font color=red><strong>异步赠书：10月Python畅销书升级</strong></font></a>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp
+
+
+                        <a href="http://edu.csdn.net/topic/web1?utm_source=blog4">
+                            <font color=blue><strong>【力荐】写给想成为前端工程师的同学们！</strong></font></a>
+                        &nbsp;&nbsp;&nbsp;&nbsp
+
+                        <a href="http://blog.csdn.net/turingbooks/article/details/78316013">
+                            <font color=blue><strong>程序员10月书讯</strong></font></a>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp
+
+
+                        <a href="http://blog.csdn.net/broadview2006/article/details/78392859">
+                            <font color=red><strong>每周荐书：高可用架构、解忧程序员、财富自由之路（评论送书）</strong></font></a>
+
+
+                    </div>
+                </div>
+
+
+                <script type="text/javascript" src="http://static.blog.csdn.net/scripts/category.js"></script>
+
+                <script type="text/ecmascript">
+                    window.quickReplyflag = true;
+                    var isBole = false;
+                    var fasrc = "http://my.csdn.net/my/favorite/miniadd?t=Redis%e9%9b%86%e7%be%a4%e4%b8%8espring%e7%9a%84%e6%95%b4%e5%90%88&u=http://blog.csdn.net/u013132051/article/details/53765344"
+                </script>
+                <div id="article_details" class="details">
+                    <div class="article_title">
+                        <span class="ico ico_type_Original"></span>
+
+                        <h1>
+        <span class="link_title"><a href="/u013132051/article/details/53765344">
+        Redis集群与spring的整合        
+           
+        </a>
+        </span>
+
+
+                        </h1>
+                    </div>
+
+
+                    <div class="article_manage clearfix">
+                        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href='http://www.csdn.net/tag/redis' target=_blank
+                 onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">redis</a><a
+                    href='http://www.csdn.net/tag/%e9%9b%86%e7%be%a4' target=_blank
+                    onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">集群</a><a
+                    href='http://www.csdn.net/tag/spring' target=_blank
+                    onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">spring</a>
+            </span>
+                        </div>
+                        <div class="article_r">
+                            <span class="link_postdate">2016-12-21 12:45</span>
+                            <span class="link_view" title="阅读次数">7991人阅读</span>
+                            <span class="link_comments" title="评论次数"> <a href="#comments"
+                                                                         onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(0)</span>
+                            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);"
+                                                                                           onclick="javascript:collectArticle('Redis%e9%9b%86%e7%be%a4%e4%b8%8espring%e7%9a%84%e6%95%b4%e5%90%88','53765344');return false;"
+                                                                                           title="收藏">收藏</a></span>
+                            <span class="link_report"> <a href="#report"
+                                                          onclick="javascript:report(53765344,2);return false;"
+                                                          title="举报">举报</a></span>
+
+                        </div>
+                    </div>
+                    <style type="text/css">
+                        .embody {
+                            padding: 10px 10px 10px;
+                            margin: 0 -20px;
+                            border-bottom: solid 1px #ededed;
+                        }
+
+                        .embody_b {
+                            margin: 0;
+                            padding: 10px 0;
+                        }
+
+                        .embody .embody_t, .embody .embody_c {
+                            display: inline-block;
+                            margin-right: 10px;
+                        }
+
+                        .embody_t {
+                            font-size: 12px;
+                            color: #999;
+                        }
+
+                        .embody_c {
+                            font-size: 12px;
+                        }
+
+                        .embody_c img, .embody_c em {
+                            display: inline-block;
+                            vertical-align: middle;
+                        }
+
+                        .embody_c img {
+                            width: 30px;
+                            height: 30px;
+                        }
+
+                        .embody_c em {
+                            margin: 0 20px 0 10px;
+                            color: #333;
+                            font-style: normal;
+                        }
+                    </style>
+                    <script type="text/javascript">
+                        $(function () {
+                            try {
+                                var lib = eval("(" + $("#lib").attr("value") + ")");
+                                var html = "";
+                                if (lib.err == 0) {
+                                    $.each(lib.data, function (i) {
+                                        var obj = lib.data[i];
+                                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                                        html += ' <a href="' + obj.url + '" target="_blank">';
+                                        html += ' <img src="' + obj.logo + '">';
+                                        html += ' <em><b>' + obj.name + '</b></em>';
+                                        html += ' </a>';
+                                    });
+                                    if (html != "") {
+                                        setTimeout(function () {
+                                            $("#lib").html(html);
+                                            $("#embody").show();
+                                        }, 100);
+                                    }
+                                }
+                            } catch (err) {
+                            }
+
+                        });
+                    </script>
+                    <div class="category clearfix">
+                        <div class="category_l">
+                            <img src="http://static.blog.csdn.net/images/category_icon.jpg">
+                            <span>分类：</span>
+                        </div>
+                        <div class="category_r">
+                            <label onclick="GetCategoryArticles('6633355','u013132051','top','53765344');">
+                                <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">Redis<em>（3）</em></span>
+                                <img class="arrow-down"
+                                     src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg"
+                                     style="display:inline;">
+                                <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg"
+                                     style="display:none;">
+                                <div class="subItem">
+                                    <div class="subItem_t"><a
+                                            href="http://blog.csdn.net/u013132051/article/category/6633355"
+                                            target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                                    <ul class="subItem_l" id="top_6633355">
+                                    </ul>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bog_copyright">
+                        <p class="copyright_p">版权声明：本文为博主原创文章，未经博主允许不得转载。欢迎点击屏幕左侧的QQ联系我，或者私信我</p>
+                    </div>
+
+
+                    <div id="article_content" class="article_content tracking-ad" data-mod=popu_307 data-dsm="post">
+                        <div class="markdown_views"><p>
+                            上一篇详细的赘述了Redis的curd操作及集群的搭建。下面我们开始将他整合到我们实际的项目中去。我的项目采用的是标准的ssm框架，ssm框架这里不说，直接开始整合。</p>
+
+                            <ul>
+                                <li>首先在maven管理中将我们的jar包引入</li>
+                            </ul>
+
+
+                            <pre class="prettyprint"><code class=" hljs xml"><span class="hljs-comment">&lt;!--1.7.2 开始支持Redis 集群--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">dependency</span>&gt;</span>                            
+    <span class="hljs-tag">&lt;<span class="hljs-title">groupId</span>&gt;</span>org.springframework.data<span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">artifactId</span>&gt;</span>spring-data-redis<span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">version</span>&gt;</span>1.7.2.RELEASE<span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">dependency</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- Redis 缓存Jar --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">groupId</span>&gt;</span>redis.clients<span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">artifactId</span>&gt;</span>jedis<span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">version</span>&gt;</span>2.9.0<span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">dependency</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!--下面就是spring的maven坐标了，这里就不写了，读者自己引入--&gt;</span></code></pre>
+
+                            <ul>
+                                <li>
+                                    在spring配置文件中我们可以进行配置Redis，但是为了将Redis分离容易修改我将它卸载另外一个xml文件中，只要在spring配置文件中引入这个Redis配置文件就行了。
+                                </li>
+                            </ul>
+
+                            <p>
+                                <img src="http://img.blog.csdn.net/20161220170300444?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                     alt="这里写图片描述" title=""></p>
+
+                            <ul>
+                                <li>下面所有的记录都是在Redis这个配置文件进行操作的。</li>
+                            </ul>
+
+
+                            <h2 id="redis连接池配置">Redis连接池配置</h2>
+
+                            <ul>
+                                <li>这里只是将设置连接池的一些基本属性，比如说最大连接数，连接前属性判断等</li>
+                            </ul>
+
+
+                            <pre class="prettyprint"><code class=" hljs applescript">&lt;bean <span
+                                    class="hljs-property">id</span>=<span
+                                    class="hljs-string">"redisPoolConfig"</span> <span
+                                    class="hljs-type">class</span>=<span class="hljs-string">"redis.clients.jedis.JedisPoolConfig"</span>&gt;
+        &lt;<span class="hljs-keyword">property</span> <span class="hljs-property">name</span>=<span
+                                        class="hljs-string">"maxTotal"</span> value=<span class="hljs-string">"${redis.maxTotal}"</span> /&gt;
+        &lt;<span class="hljs-keyword">property</span> <span class="hljs-property">name</span>=<span
+                                        class="hljs-string">"maxIdle"</span> value=<span class="hljs-string">"${redis.maxIdle}"</span> /&gt;
+        &lt;<span class="hljs-keyword">property</span> <span class="hljs-property">name</span>=<span
+                                        class="hljs-string">"maxWaitMillis"</span> value=<span class="hljs-string">"${redis.maxWait}"</span> /&gt;
+        &lt;<span class="hljs-keyword">property</span> <span class="hljs-property">name</span>=<span
+                                        class="hljs-string">"testOnBorrow"</span> value=<span class="hljs-string">"${redis.testOnBorrow}"</span> /&gt;
+    &lt;/bean&gt;</code></pre>
+
+                            <ul>
+                                <li><p>maxIdle：控制一个pool最多有多少个状态为idle的jedis实例；</p></li>
+                                <li><p>在borrow一个jedis实例时，是否提前进行alidate操作；如果为true，则得到的jedis实例均是可用的</p></li>
+                                <li>maxWaitMillis :
+                                    表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；
+                                </li>
+                            </ul>
+
+
+                            <h2 id="redis集群配置">Redis集群配置</h2>
+
+                            <p>这里我们就是将我们上一篇开启的Redis服务引入到项目中来。clusterNodes就是我们一个一个的Redis服务。</p>
+
+
+                            <pre class="prettyprint"><code class=" hljs xml"><span class="hljs-comment">&lt;!-- Redis集群配置 --&gt;</span>
+     <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span class="hljs-attribute">id</span>=<span
+             class="hljs-value">"redisClusterConfig"</span> <span class="hljs-attribute">class</span>=<span
+             class="hljs-value">"org.springframework.data.redis.connection.RedisClusterConfiguration"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"maxRedirects"</span> <span
+                class="hljs-attribute">value</span>=<span class="hljs-value">"3"</span>&gt;</span><span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">property</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"clusterNodes"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">set</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span
+                        class="hljs-attribute">class</span>=<span class="hljs-value">"org.springframework.data.redis.connection.RedisNode"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"host"</span> <span
+                            class="hljs-attribute">value</span>=<span
+                            class="hljs-value">"127.0.0.1"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">constructor-arg</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"port"</span> <span
+                            class="hljs-attribute">value</span>=<span class="hljs-value">"7000"</span>&gt;</span><span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">constructor-arg</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span>
+
+                <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span
+                        class="hljs-attribute">class</span>=<span class="hljs-value">"org.springframework.data.redis.connection.RedisNode"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"host"</span> <span
+                            class="hljs-attribute">value</span>=<span
+                            class="hljs-value">"127.0.0.1"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">constructor-arg</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"port"</span> <span
+                            class="hljs-attribute">value</span>=<span class="hljs-value">"7004"</span>&gt;</span><span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">constructor-arg</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span
+                        class="hljs-attribute">class</span>=<span class="hljs-value">"org.springframework.data.redis.connection.RedisNode"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"host"</span> <span
+                            class="hljs-attribute">value</span>=<span
+                            class="hljs-value">"127.0.0.1"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                                        class="hljs-title">constructor-arg</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                            class="hljs-attribute">name</span>=<span class="hljs-value">"port"</span> <span
+                            class="hljs-attribute">value</span>=<span class="hljs-value">"7005"</span>&gt;</span><span
+                                        class="hljs-tag">&lt;/<span class="hljs-title">constructor-arg</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-title">set</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">property</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span> </code></pre>
+
+
+                            <h2 id="redis连接工厂">Redis连接工厂</h2>
+
+                            <p>我们将上面的Redis服务节点和连接池引入到工厂中，有工程去生产一个可用的jedis提供我们进行缓存的CURD操作！！</p>
+
+
+                            <pre class="prettyprint"><code class=" hljs xml"><span class="hljs-comment">&lt;!-- ReDis连接工厂 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span class="hljs-attribute">id</span>=<span
+            class="hljs-value">"redis4CacheConnectionFactory"</span>
+        <span class="hljs-attribute">class</span>=<span class="hljs-value">"org.springframework.data.redis.connection.jedis.JedisConnectionFactory"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">constructor-arg</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"clusterConfig"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"redisClusterConfig"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"timeout"</span> <span
+                class="hljs-attribute">value</span>=<span class="hljs-value">"${redis.timeout}"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"poolConfig"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"redisPoolConfig"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span></code></pre>
+
+
+                            <h2 id="redis模板">Redis模板</h2>
+
+                            <p>提供了jedis进行操作我们就要放道模板里面给我们调用！。</p>
+
+
+                            <pre class="prettyprint"><code class=" hljs xml"><span class="hljs-comment">&lt;!-- 存储序列化 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span class="hljs-attribute">name</span>=<span
+            class="hljs-value">"stringRedisSerializer"</span>
+        <span class="hljs-attribute">class</span>=<span class="hljs-value">"org.springframework.data.redis.serializer.StringRedisSerializer"</span> /&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 集群Resis使用模板 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">bean</span> <span class="hljs-attribute">id</span>=<span
+            class="hljs-value">"clusterRedisTemplate"</span> <span class="hljs-attribute">class</span>=<span
+            class="hljs-value">"org.springframework.data.redis.core.RedisTemplate"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"connectionFactory"</span> <span
+                class="hljs-attribute">ref</span>=<span
+                class="hljs-value">"redis4CacheConnectionFactory"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"keySerializer"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"stringRedisSerializer"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"hashKeySerializer"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"stringRedisSerializer"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"valueSerializer"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"stringRedisSerializer"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">property</span> <span
+                class="hljs-attribute">name</span>=<span class="hljs-value">"hashValueSerializer"</span> <span
+                class="hljs-attribute">ref</span>=<span class="hljs-value">"stringRedisSerializer"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">bean</span>&gt;</span></code></pre>
+
+
+                            <h2 id="项目调用">项目调用</h2>
+
+                            <p>在配置文件中都已经将jedis配置好了，我们只需要通过这个模板就可以对Redis进行CURD操作了。下面是个简单的列子</p>
+
+
+                            <pre class="prettyprint"><code class=" hljs cs">clusterRedisTemplate.execute(<span
+                                    class="hljs-keyword">new</span> RedisCallback&lt;Long&gt;() {
+            <span class="hljs-keyword">public</span> Long <span class="hljs-title">doInRedis</span>(RedisConnection connection)
+                    throws DataAccessException {
+                <span class="hljs-keyword">byte</span>[] keyb = key.getBytes();
+                <span class="hljs-keyword">byte</span>[] valueb = toByteArray(<span class="hljs-keyword">value</span>);
+                <span class="hljs-comment">// 判断当前值是否已经存在</span>
+                <span class="hljs-keyword">if</span> (connection.exists(keyb)) {
+                    <span class="hljs-comment">// 删除原数据</span>
+                    connection.del(keyb);
+                }
+                connection.<span class="hljs-keyword">set</span>(keyb, valueb);
+                <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>L;
+            }
+        });</code></pre>
+
+
+                            <h2 id="源码探究竟">源码探究竟</h2>
+
+                            <p>在RedisClusterConfiguration类中我们传入的Redis服务node，我们设置的是property然后该类中就开始执行下面代码 <br>
+                                <img src="http://img.blog.csdn.net/20161220172721563?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                     alt="这里写图片描述" title=""></p>
+
+                            <p>然后我们在工厂中传入这些节点，</p>
+
+                            <p>
+                                <img src="http://img.blog.csdn.net/20161221123241083?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                     alt="这里写图片描述" title=""></p>
+
+                            <p>这个工厂给我提供了一个afterproperties方法，意思就是在这些参数设置完成之后执行的一个方法。</p>
+
+                            <p>
+                                <img src="http://img.blog.csdn.net/20161221123411193?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                     alt="这里写图片描述" title=""></p>
+
+                            <p>在这里我们可以看见一个creatPool的方法，这个就是去连接池里创建连接 <br>
+                                <img src="http://img.blog.csdn.net/20161221123513568?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                     alt="这里写图片描述" title=""></p>
+
+                            <h2 id="bug解决">Bug解决</h2>
+
+                            <p>上面的部署
+                                会出现一个问题，就是在项目中，每次初始化时会重连接池中选择一个可用的Redis服务连接，当这个Redis服务宕机后我们的项目还会继续连接这个Redis服务，我们只能从新启动项目，项目才会从新从连接池中选择新的Redis服务。</p>
+
+                            <ul>
+                                <li>解决办法 我在每次操作Redis时都去重构连接池，这样就保证我每次都会去连接池找一个正真可用的Redis服务。</li>
+                                <li>解决就是将RedisNode注入到项目中，每次都执行我们上次看到的creatPool方法</li>
+                            </ul>
+
+
+                            <pre class="prettyprint"><code class=" hljs java"><span class="hljs-javadoc">/** Redis模板注入 */</span>
+    <span class="hljs-annotation">@Resource</span>
+    <span class="hljs-keyword">private</span> RedisClusterConfiguration redisClusterConfig;
+    <span class="hljs-keyword">private</span> JedisConnectionFactory redis4CacheConnectionFactory;
+    <span class="hljs-annotation">@Resource</span>
+    <span class="hljs-keyword">private</span> RedisTemplate&lt;String, Object&gt; clusterRedisTemplate;
+    <span class="hljs-comment">//重构连接池</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span
+                                        class="hljs-title">init</span>(){
+        redis4CacheConnectionFactory=<span class="hljs-keyword">new</span> JedisConnectionFactory(redisClusterConfig);
+        redis4CacheConnectionFactory.afterPropertiesSet();
+        clusterRedisTemplate.setConnectionFactory(redis4CacheConnectionFactory);
+    }</code></pre>
+
+                            <p>这样又出现问题了，每次都初始化连接池，这在连接池上很费性能，暂时没有解决办法，但是我初步想通过redis sentinel
+                                来检测Redis集群中的Redis服务。当Redis宕机后通过sentinel 提供的API来通知项目重新去构建连接池，重新连接新Redis服务</p></div>
+                        <script type="text/javascript">
+                            $(function () {
+                                $('pre.prettyprint code').each(function () {
+                                    var lines = $(this).text().split('\n').length;
+                                    var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                                    $(this).addClass('has-numbering').parent().append($numbering);
+                                    for (i = 1; i <= lines; i++) {
+                                        $numbering.append($('<li/>').text(i));
+                                    }
+                                    ;
+                                    $numbering.fadeIn(1700);
+                                });
+                            });
+                        </script>
+
+                    </div>
+
+
+                    <!-- Baidu Button BEGIN -->
+
+
+                    <div class="bdsharebuttonbox tracking-ad" style="float: right;" data-mod="popu_172">
+                        <a href="#" class="bds_more" data-cmd="more"
+                           style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+                        <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"
+                           style="background-position:0 -52px !important"></a>
+                        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"
+                           style="background-position:0 -104px !important"></a>
+                        <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"
+                           style="background-position:0 -260px !important"></a>
+                        <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"
+                           style="background-position:0 -208px !important"></a>
+                        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"
+                           style="background-position:0 -1612px !important"></a>
+                    </div>
+                    <script>window._bd_share_config = {
+                        "common": {
+                            "bdSnsKey": {},
+                            "bdText": "",
+                            "bdMini": "1",
+                            "bdMiniList": false,
+                            "bdPic": "",
+                            "bdStyle": "0",
+                            "bdSize": "16"
+                        }, "share": {}
+                    };
+                    with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                    <!-- Baidu Button END -->
+
+
+                    <!--172.16.140.16-->
+
+                    <!-- Baidu Button BEGIN -->
+                    <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434"></script>
+                    <script type="text/javascript" id="bdshell_js"></script>
+                    <script type="text/javascript">
+                        document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date() / 3600000)
+                    </script>
+                    <!-- Baidu Button END -->
+
+
+                    <div id="digg" ArticleId="53765344">
+                        <dl id="btnDigg" class="digg digg_disable" onclick="btndigga();">
+
+                            <dt>顶</dt>
+                            <dd>8</dd>
+                        </dl>
+
+
+                        <dl id="btnBury" class="digg digg_disable" onclick="btnburya();">
+
+                            <dt>踩</dt>
+                            <dd>0</dd>
+                        </dl>
+
+                    </div>
+                    <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);">&nbsp;</a></div>
+                    <div class="tracking-ad" data-mod="popu_223"><a href="javascript:void(0);">&nbsp;</a></div>
+                    <script type="text/javascript">
+                        function btndigga() {
+                            $(".tracking-ad[data-mod='popu_222'] a").click();
+                        }
+                        function btnburya() {
+                            $(".tracking-ad[data-mod='popu_223'] a").click();
+                        }
+                    </script>
+
+                    <ul class="article_next_prev">
+                        <li class="prev_article"><span
+                                onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='http://blog.csdn.net/u013132051/article/details/53764042';">上一篇</span><a
+                                href="http://blog.csdn.net/u013132051/article/details/53764042"
+                                onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">Redis简单梳理及集群配置</a>
+                        </li>
+                        <li class="next_article"><span
+                                onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='http://blog.csdn.net/u013132051/article/details/53841534';">下一篇</span><a
+                                href="http://blog.csdn.net/u013132051/article/details/53841534"
+                                onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">java
+                            web 加载Spring --web.xml 篇</a></li>
+                    </ul>
+
+                    <div style="clear:both; height:10px;"></div>
+
+
+                    <div class="similar_article">
+                        <h4></h4>
+                        <div class="similar_c" style="margin:20px 0px 0px 0px">
+                            <div class="similar_c_t">
+                                &nbsp;&nbsp;相关文章推荐
+                            </div>
+
+                            <div class="similar_wrap tracking-ad" data-mod="popu_36" style="max-height:250px">
+                                <ul class="similar_list fl">
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/gxw19874/article/details/52024900"
+                                           title="spring集成 JedisCluster 联接 redis3.0 集群"
+                                           strategy="BlogCommendFromBaidu_0" target="_blank">spring集成 JedisCluster 联接
+                                            redis3.0 集群</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/huiyiCourse/detail/596?utm_source=blog7"
+                                           title="免费直播 神经网络的原理及结构设计--何宇健" strategy="undefined" target="_blank">免费直播
+                                            神经网络的原理及结构设计--何宇健</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/tzszhzx/article/details/44590871"
+                                           title="Spring整合redis，通过sentinel进行主从切换。(何志雄)"
+                                           strategy="BlogCommendFromBaidu_1" target="_blank">Spring整合redis，通过sentinel进行主从切换。(何志雄)</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/huiyiCourse/detail/602?utm_source=blog7"
+                                           title="Apache Weex：移动研发的进阶之路--董岩" strategy="undefined" target="_blank">Apache
+                                            Weex：移动研发的进阶之路--董岩</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/LZJLZJLZJLZJLZJLZJ/article/details/52865149"
+                                           title="redis配置读写分离以及利用哨兵sentinel进行自动主从切换" strategy="BlogCommendFromBaidu_2"
+                                           target="_blank">redis配置读写分离以及利用哨兵sentinel进行自动主从切换</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/course/detail/6252?utm_source=blog7"
+                                           title="C++ 百万并发网络通信引擎架构与实现" strategy="undefined" target="_blank">C++
+                                            百万并发网络通信引擎架构与实现</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/u012477338/article/details/51719309"
+                                           title="基于Redis Sentinel的Redis集群(主从&amp;Sharding)高可用方案"
+                                           strategy="BlogCommendFromBaidu_3" target="_blank">基于Redis Sentinel的Redis集群(主从&amp;Sharding)高可用方案</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/course/detail/6271?utm_source=blog7"
+                                           title="PHP入门到精通及项目实战" strategy="undefined" target="_blank">PHP入门到精通及项目实战</a>
+                                    </li>
+                                </ul>
+                                <ul class="similar_list fr">
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/kity9420/article/details/53571718"
+                                           title="Spring+SpringMVC做Redis集群(Sentinel模式)"
+                                           strategy="BlogCommendFromBaidu_4" target="_blank">Spring+SpringMVC做Redis集群(Sentinel模式)</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/course/detail/6409?utm_source=blog7"
+                                           title=" Kotlin基本语法到实战开发" strategy="undefined" target="_blank">
+                                            Kotlin基本语法到实战开发</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/u010180738/article/details/64617541"
+                                           title="JedisSentinelPool配置说明" strategy="BlogCommendFromBaidu_5"
+                                           target="_blank">JedisSentinelPool配置说明</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://edu.csdn.net/course/detail/2932?utm_source=blog7"
+                                           title=" Android 实战开发 第三方SDK 讯飞语音SDK" strategy="undefined" target="_blank">
+                                            Android 实战开发 第三方SDK 讯飞语音SDK</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/dc_726/article/details/11694437"
+                                           title="Redis主从和HA配置" strategy="BlogCommendFromBaidu_6" target="_blank">Redis主从和HA配置</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/dc_726/article/details/48084373"
+                                           title="Jedis分片Sentinel连接池实验" strategy="BlogCommendFromBaidu_7"
+                                           target="_blank">Jedis分片Sentinel连接池实验</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://download.csdn.net/download/u010821757/9842297"
+                                           title="SpringMVC整合Redis集群" strategy="BlogCommendFromBaidu_8" target="_blank">SpringMVC整合Redis集群</a>
+                                    </li>
+                                    <li>
+                                        <em>•</em>
+                                        <a href="http://blog.csdn.net/u010246789/article/details/52220067"
+                                           title="java代码中操作Redis：单机redis、集群redis（spring+redis集成）"
+                                           strategy="BlogCommendFromBaidu_9" target="_blank">java代码中操作Redis：单机redis、集群redis（spring+redis集成）</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div>
+
+
+                    <!-- 广告位：PC端-博客内容页-banner1-960*90 -->
+
+                    <!-- 广告位：PC端-博客详情页底部banner-960*90 -->
+                    <script>
+                        (function () {
+                            var s = "_" + Math.random().toString(36).slice(2);
+                            document.write('<div id="' + s + '"></div>');
+                            (window.slotbydup = window.slotbydup || []).push({
+                                id: '4770928',
+                                container: s,
+                                size: '960,90',
+                                display: 'inlay-fix'
+                            });
+                        })();
+                    </script>
+                </div>
+
+                <div id="suggest"></div>
+                <script language="javascript" type='text/javascript'>
+                    $(function () {
+                        $.get("/u013132051/svc/GetSuggestContent/53765344", function (data) {
+                            $("#suggest").html(data);
+                        });
+                    });
+                </script>
+
+
+                <!-- 广告位开始 -->
+                <!-- 广告位结束 -->
+
+
+                <div class="comment_class">
+                    <div id="comment_title" class="panel_head">
+                        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+                    <div id="comment_list">
+                    </div>
+                    <div id="comment_bar">
+                    </div>
+                    <div id="comment_form">
+                    </div>
+                    <div class="announce">
+                        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+                </div>
+
+                <script type="text/javascript">
+                    var fileName = '53765344';
+                    var commentscount = 0;
+                    var islock = false
+                </script>
+
+                <div id="ad_bot">
+                </div>
+                <div id="report_dialog">
+                </div>
+
+                <div id="d-top" style="bottom:60px;">
+
+                    <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+                        <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+                    </a>
+                    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部"
+                       onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])"
+                       style="">
+                        <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+                    </a>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $("#ad_frm_0").height("90px");
+
+                        setTimeout(function () {
+                            $("#ad_frm_2").height("200px");
+                        }, 1000);
+                    });
+
+                </script>
+                <style type="text/css">
+                    .tag_list {
+                        background: none repeat scroll 0 0 #FFFFFF;
+                        border: 1px solid #D7CBC1;
+                        color: #000000;
+                        font-size: 12px;
+                        line-height: 20px;
+                        list-style: none outside none;
+                        margin: 10px 2% 0 1%;
+                        padding: 1px;
+                    }
+
+                    .tag_list h5 {
+                        background: none repeat scroll 0 0 #E0DBD3;
+                        color: #47381C;
+                        font-size: 12px;
+                        height: 24px;
+                        line-height: 24px;
+                        padding: 0 5px;
+                        margin: 0;
+                    }
+
+                    .tag_list h5 a {
+                        color: #47381C;
+                    }
+
+                    .classify {
+                        margin: 10px 0;
+                        padding: 4px 12px 8px;
+                    }
+
+                    .classify a {
+                        margin-right: 20px;
+                        white-space: nowrap;
+                    }
+                </style>
+
+
+                <div id="pop_win"
+                     style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+
+                </div>
+                <div id="popup_mask"></div>
+                <style>
+                    #popup_mask {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        background: #000;
+                        z-index: 9999;
+                        left: 0px;
+                        top: 0px;
+                        opacity: 0.3;
+                        filter: alpha(opacity=30);
+                        display: none;
+                    }
+
+                </style>
+
+
+                <script type="text/javascript">
+                    $(function () {
+
+                        setTimeout(function () {
+                            $(".comment_body:contains('回复')").each(function (index, item) {
+                                var u = $(this).text().split('：')[0].toString().replace("回复", "")
+                                var thisComment = $(this);
+                                if (u) {
+                                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function (a) {
+                                        if (a != null && a.data != null && a.data.length > 0) {
+                                            nick = a.data[0].n;
+                                            if (u != nick) {
+                                                thisComment.text(thisComment.text().replace(u, nick));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+                        }, 200);
+
+                        setTimeout(function () {
+                            $(".math").each(function (index, value) {
+                                $(this).find("span").last().css("color", "#fff");
+                            })
+                        }, 5000);
+
+                        setTimeout(function () {
+                            $(".math").each(function (index, value) {
+                                $(this).find("span").last().css("color", "#fff");
+                            })
+                        }, 10000);
+
+                        setTimeout(function () {
+                            $(".math").each(function (index, value) {
+                                $(this).find("span").last().css("color", "#fff");
+                            })
+                        }, 15000);
+
+                        setTimeout(function () {
+                            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({
+                                "position": "absolute",
+                                "left": "50%"
+                            });
+                        }, 300);
+                    });
+
+                    function loginbox() {
+                        var $logpop = $("#pop_win");
+                        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+                        $('#popup_mask').css({
+                            opacity: 0.5,
+                            width: $(document).width() + 'px',
+                            height: $(document).height() + 'px'
+                        });
+                        $('#popup_mask').css("display", "block");
+
+                        $logpop.css({
+                            top: ($(window).height() - $logpop.height()) / 2 + $(window
+                            ).scrollTop() + 'px',
+                            left: ($(window).width() - $logpop.width()) / 2
+                        });
+
+                        setTimeout(function () {
+                            $logpop.show();
+                            $logpop.css({
+                                opacity: 1
+                            });
+                        }, 200);
+
+                        $('#popup_mask').unbind("click");
+                        $('#popup_mask').bind("click", function () {
+                            $('#popup_mask').hide();
+                            var $clopop = $("#pop_win");
+                            $("#common_ask_div_sc").css("display", "none");
+                            $clopop.css({
+                                opacity: 0
+                            });
+                            setTimeout(function () {
+                                $clopop.hide();
+                            }, 350);
+                            return false;
+                        });
+                    }
+
+                    var articletitle = 'Redis集群与spring的整合';
+
+                </script>
+
+
+                <div class="clear">
+                </div>
+            </div>
+
+        </div>
+
+        <div id="side">
+
+            <div class="side">
+                <div id="panel_Profile" class="panel">
+                    <ul class="panel_head"><span>个人资料</span></ul>
+                    <ul class="panel_body profile">
+                        <div id="blog_userface">
+                            <a href="http://my.csdn.net/u013132051" target="_blank">
+                                <img src="http://avatar.csdn.net/E/8/5/1_u013132051.jpg" title="访问我的空间"
+                                     style="max-width:90%"/>
+                            </a>
+                            <br/>
+                            <span><a href="http://my.csdn.net/u013132051" class="user_name"
+                                     target="_blank">u013132051</a></span>
+                        </div>
+                        <div class="interact">
+
+                            <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+                            <a href="javascript:void(0);" class="letter" title="[发私信]"
+                               onclick="window.open('http://msg.csdn.net/letters/model?receiver=u013132051','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>
+                        </div>
+                        <div id="blog_medal">
+                            <div class="ico_expert" title="CSDN博客准专家"
+                                 onclick="javascript:location='http://blog.csdn.net/experts/rule.html'"
+                                 style=" cursor:pointer;width:54px;height:60px;background:url('http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhunzhuanjiamiddle.png') no-repeat"></div>
+                            <div id="bms_box">
+                                <a target="_blank">
+                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/zhuanlandaren.png"
+                                         onmouseover="m_over_m(this,2)" onmouseout="m_out_m()" alt="1">
+                                </a>
+                                <a target="_blank">
+                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png"
+                                         onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="3">
+                                </a>
+                            </div>
+                        </div>
+                        <ul id="blog_rank">
+                            <li>访问：<span>759632次</span></li>
+                            <li>积分：<span>6802</span></li>
+                            <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog6.png" alt=""
+                 style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle"
+                 style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：6802 </div>
+        </span></li>
+                            <li>排名：<span>第3754名</span></li>
+                        </ul>
+                        <ul id="blog_statistics">
+                            <li>原创：<span>86篇</span></li>
+                            <li>转载：<span>1篇</span></li>
+                            <li>译文：<span>0篇</span></li>
+                            <li>评论：<span>110条</span></li>
+                        </ul>
+                    </ul>
+                </div>
+
+
+                <div id="custom_column_42141253" class="panel">
+                    <ul class="panel_head"><span>联系方式</span></ul>
+                    <ul class="panel_body">
+
+                        <div><a target="_blank"
+                                href="http://shang.qq.com/wpa/qunwpa?idkey=a9806f2a420f90a9da8dd24d8cb8848c7dc7c810832db41744ea44ef6b7167e2"><img
+                                src="http://img.blog.csdn.net/20170425212847159?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                title="JavaWeb讨论群" border="0" style="width:90px"><font size="5" color="red" face="楷体">
+                            <marquee>
+                                点击加群
+                            </marquee>
+                        </font></a></div>
+                        <hr>
+                        <div><span class="closeQR"></span><a target="_blank"
+                                                             href="http://wpa.qq.com/msgrd?v=3&amp;uin=870775401&amp;site=qq&amp;menu=yes"><img
+                                src="http://avatar.csdn.net/E/8/5/3_u013132051.jpg" title="欢迎给我发消息" border="0"><font
+                                size="5" color="blue" face="楷体">点击私聊</font>
+                        </a>
+                            <div>
+                                <hr>
+                                <div><a href="http://msg.csdn.net/letters/model?receiver=u013132051"><font size="3"
+                                                                                                           color="green">给我发私信</font></a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div style="width:100%; height:20%; position:fixed; bottom:0; left:0px; z-index:1000; font-weight:bold; font-size:1.3em; background-color:#FE5">
+                            <div style="float:left; width:15%">
+                                <div style="text-align:center; border-bottom:1px solid #aaa; padding:4px">QQ加我技术群
+                                </div>
+                                <div style="text-align:center"><img
+                                        src="http://img.blog.csdn.net/20170426090609675?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMzEzMjA1MQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"
+                                        width="100px" height="100px"></div>
+                            </div>
+                            <div style="margin-top:1%; float:left; width:70%"><a href="https://zxhtom.oschina.io"
+                                                                                 color="red"><font size="5" color="red">博客搬家咯,点击我到我的新博客里搜索相同的文章既可找到对应文章，新博客刚开通，不足之处有待改进。后续博文只在csdn更新简介。详情还请点我跳转！点我跳转！点我跳转！新博客还在配置中，如遇无法访问稍等片刻</font></a>
+                            </div>
+                            <div style="float:left; width:15%">
+                                <div style="text-align:center; border-bottom:1px solid #aaa; padding:4px">关注微信公众号
+                                </div>
+                                <div style="text-align:center"><img src="http://img.blog.csdn.net/20161031125322526"
+                                                                    width="100px" height="100px"></div>
+                            </div>
+                        </div>
+
+                    </ul>
+                </div>
+                <div class="panel" id="panel_Search">
+                    <ul class="panel_head"><span>文章搜索</span></ul>
+                    <ul class="panel_body" class="form_search">
+                        <form id="frmSearch" action="http://so.csdn.net/search"
+                              class="form_search csdn-tracking-statistics" target="_blank" data-mod="popu_306">
+                            <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"/></span>
+                            <input id="btnSubmit" type="button" value="搜索" title="search in blog"/>
+                            <input type="hidden" name="q" id="inputQ"/>
+                            <input type="hidden" name="t" value="blog"/>
+                            <a id="btnSearchBlog" target="_blank"></a>
+                        </form>
+                    </ul>
+                </div>
+
+                <script type="text/javascript">
+
+
+                    $(function () {
+                        $("#btnSubmit").unbind("click");
+                        $("#btnSubmit").click(function () {
+                            search();
+                        });
+
+                        $("#frmSearch").submit(function () {
+                            search();
+                            return false;
+                        });
+
+                        function search() {
+                            if ($("#inputSearch").val() == "") {
+                                alert("请录入搜索关键词！");
+                                return false;
+                            }
+                            //var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+                            var url = "https://www.baidu.com/s?wd=" + encodeURIComponent($("#inputSearch").val()) + "%20site%3Ablog.csdn.net"
+                            window.location.href = url;
+                        }
+                    });
+                </script>
+                <div id="panel_Category" class="panel">
+                    <ul class="panel_head"><span>博客专栏</span></ul>
+                    <ul class="panel_body" id="sp_column">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="padding:10px 10px 0 0;">
+                                    <a href="http://blog.csdn.net/column/details/12699.html" target="_blank"><img
+                                            src="http://img.blog.csdn.net/20160825143055902"
+                                            style="width:75px;height:75px;"/></a>
+                                </td>
+                                <td style="padding:10px 0; vertical-align:top;">
+                                    <a href="http://blog.csdn.net/column/details/12699.html"
+                                       target="_blank">java世界的喜怒哀乐</a>
+                                    <p>文章：13篇</p>
+                                    <span>阅读：208649</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </ul>
+                </div>
+                <div id="panel_Category" class="panel">
+                    <ul class="panel_head"><span>文章分类</span></ul>
+                    <ul class="panel_body">
+                        <li>
+                            <a href="/u013132051/article/category/6064329"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">java</a><span>(47)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/2186097"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">程序</a><span>(25)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/2191067"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">想法</a><span>(23)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/2644037"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">思想</a><span>(18)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/2672787"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">单链表功能实现</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6286737"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Android</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6288962"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">json解析-poi</a><span>(3)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6288990"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">本地排序</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6326633"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">插件使用-cook</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6350145"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">WebGis</a><span>(3)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6377934"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">ext</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6379800"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">博思汇</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6381693"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">算法</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6381694"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">罗辑思维</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6392006"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">框架</a><span>(7)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6401752"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">eclipse</a><span>(6)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6402270"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">maven</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6440539"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">email</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6454198"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">itext</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6462101"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">laydate</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6468801"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">前端特效</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6469037"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">JSmooth</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6470511"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">导入导出</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6495481"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">H5-总结</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6535569"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">项目部署</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6563091"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">nodejs</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6563183"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">linux</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6566174"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">平台功能使用</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6571530"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">pdf-js</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6633355"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Redis</a><span>(4)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6640961"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">spring</a><span>(4)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6666914"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Eclipse-插件</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6678002"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">exe4j</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6718313"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">反射</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6727811"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">微信</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6727812"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">开发者配置</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6751442"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">DataTable</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6780545"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">jQuery</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6797881"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">bootstrap</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6850724"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">kafka-消息发布与订阅</a><span>(2)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6877811"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">bat脚本</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6877812"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">bat命令</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6891600"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">服务器</a><span>(1)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/category/6966793"
+                               onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">设计模式之禅-pdf</a><span>(1)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="panel_Archive" class="panel">
+                    <ul class="panel_head"><span>文章存档</span></ul>
+                    <ul class="panel_body">
+                        <div id="archive_list">
+                            <!--归档统计-->
+                            <li><a href="/u013132051/article/month/2017/11">2017年11月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2017/07">2017年07月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2017/06">2017年06月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2017/04">2017年04月</a><span>(5)</span></li>
+                            <li><a href="/u013132051/article/month/2017/03">2017年03月</a><span>(4)</span></li>
+                            <li><a href="/u013132051/article/month/2017/02">2017年02月</a><span>(4)</span></li>
+                            <li><a href="/u013132051/article/month/2017/01">2017年01月</a><span>(9)</span></li>
+                            <li><a href="/u013132051/article/month/2016/12">2016年12月</a><span>(7)</span></li>
+                            <li><a href="/u013132051/article/month/2016/11">2016年11月</a><span>(3)</span></li>
+                            <li><a href="/u013132051/article/month/2016/10">2016年10月</a><span>(9)</span></li>
+                            <li><a href="/u013132051/article/month/2016/09">2016年09月</a><span>(6)</span></li>
+                            <li><a href="/u013132051/article/month/2016/08">2016年08月</a><span>(7)</span></li>
+                            <li><a href="/u013132051/article/month/2016/07">2016年07月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2016/06">2016年06月</a><span>(4)</span></li>
+                            <li><a href="/u013132051/article/month/2016/05">2016年05月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2016/04">2016年04月</a><span>(2)</span></li>
+                            <li><a href="/u013132051/article/month/2016/03">2016年03月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2016/02">2016年02月</a><span>(3)</span></li>
+                            <li><a href="/u013132051/article/month/2015/11">2015年11月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2015/04">2015年04月</a><span>(1)</span></li>
+                            <li><a href="/u013132051/article/month/2014/11">2014年11月</a><span>(3)</span></li>
+                            <li><a href="/u013132051/article/month/2014/10">2014年10月</a><span>(6)</span></li>
+                            <li><a href="/u013132051/article/month/2014/04">2014年04月</a><span>(5)</span></li>
+                            <li><a href="/u013132051/article/month/2014/01">2014年01月</a><span>(2)</span></li>
+                        </div>
+                    </ul>
+                </div>
+                <div id="hotarticls" class="panel tracking-ad" data-mod="popu_340">
+                    <ul class="panel_head">
+    <span>       
+阅读排行    </span>
+                    </ul>
+
+                    <ul class="panel_body itemlist">
+                        <li>
+                            <a href="/u013132051/article/details/52637354" title="JavaWeb配置详解(结合框架SpringMVC)">JavaWeb配置详解(结合框架SpringMVC)</a><span>(38938)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52290688"
+                               title="算法之路——递归">算法之路——递归</a><span>(34464)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52250507"
+                               title="谈谈我对Ext的认识，元芳，你怎么看">谈谈我对Ext的认识，元芳，你怎么看</a><span>(30229)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52232483" title="带你剖析WebGis的世界奥秘----Geojson数据加载(高级)">带你剖析WebGis的世界奥秘----Geojson数据加载(高级)</a><span>(28036)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52438086" title="eclipse插件——maven">eclipse插件——maven</a><span>(25689)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52129011" title="带你剖析WebGis的世界奥秘----瓦片式加载地图">带你剖析WebGis的世界奥秘----瓦片式加载地图</a><span>(25540)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52368723" title="SSM框架的详细解说">SSM框架的详细解说</a><span>(22938)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52004897" title="前端开发中快速掌握的技巧">前端开发中快速掌握的技巧</a><span>(22789)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52595178" title="建行项目随笔">建行项目随笔</a><span>(21175)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/51778516"
+                               title="Excel批量导入(导出同理)">Excel批量导入(导出同理)</a><span>(19766)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="hotarticls2" class="panel tracking-ad" data-mod="popu_341">
+                    <ul class="panel_head"><span>评论排行</span></ul>
+                    <ul class="panel_body itemlist">
+                        <li>
+                            <a href="/u013132051/article/details/52290688"
+                               title="算法之路——递归">算法之路——递归</a><span>(20)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52232483" title="带你剖析WebGis的世界奥秘----Geojson数据加载(高级)">带你剖析WebGis的世界奥秘----Geojson数据加载(高级)</a><span>(13)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52250507"
+                               title="谈谈我对Ext的认识，元芳，你怎么看">谈谈我对Ext的认识，元芳，你怎么看</a><span>(10)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52857144" title="POI通用导出Excel数据(包括样式设计)">POI通用导出Excel数据(包括样式设计)</a><span>(9)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52197798" title="带你剖析WebGis的世界奥秘----点和线的世界">带你剖析WebGis的世界奥秘----点和线的世界</a><span>(6)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/51743627" title="javaWeb 中前端Form表单数据处理(手动拼json)">javaWeb
+                                中前端Form表单数据处理(手动拼json)</a><span>(4)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52129011" title="带你剖析WebGis的世界奥秘----瓦片式加载地图">带你剖析WebGis的世界奥秘----瓦片式加载地图</a><span>(4)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/52004897" title="前端开发中快速掌握的技巧">前端开发中快速掌握的技巧</a><span>(4)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/23476365" title="学生管理系统">学生管理系统</a><span>(3)</span>
+                        </li>
+                        <li>
+                            <a href="/u013132051/article/details/76066920" title="pdf.js跨域加载文件">pdf.js跨域加载文件</a><span>(3)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+                    <ul class="panel_head"><span>推荐文章</span></ul>
+                    <ul class="panel_body" id="ad_commend">
+                        <ul>
+                            <li>
+                                <a href="http://blog.csdn.net/blogdevteam/article/details/78287539"
+                                   target="_blank">* CSDN邀请您来GitChat赚钱啦！</a></li>
+
+                            <li>
+                                <a href=" http://blog.csdn.net/gitchat/article/details/78410081"
+                                   target="_blank">* 改做人工智能之前，90%的人都没能给自己定位</a></li>
+
+                            <li>
+                                <a href="http://blog.csdn.net/gitchat/article/details/78410095"
+                                   target="_blank">* 想入行 AI，别让那些技术培训坑了你...</a></li>
+
+                            <li>
+                                <a href="http://blog.csdn.net/gitchat/article/details/78431273"
+                                   target="_blank">* 大型技术组织 DevOps 转型经验总结</a></li>
+
+                            <li>
+                                <a href=" http://blog.csdn.net/gitchat/article/details/78410108 "
+                                   target="_blank">* 两款敏捷工具，治好你碎片化交付硬伤</a></li>
+
+
+                            <li>
+                                <a href="  http://blog.csdn.net/gitchat/article/details/78410087"
+                                   target="_blank">* 低学历又如何？这样的程序员照样可以逆袭</a></li>
+
+                        </ul>
+                    </ul>
+                </div>
+
+
+                <div id="newcomments" class="panel">
+                    <ul class="panel_head"><span>最新评论</span></ul>
+                    <ul class="panel_body itemlist">
+                        <li>
+
+                            <a href="/u013132051/article/details/76066920#comments">pdf.js跨域加载文件</a>
+                            <p style="margin:0px;"><a href="/guangjuner" class="user_name">guangjuner</a>:
+                                请问在firefox和ie是否好使呢?
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/52232483#comments">带你剖析WebGis的世界奥秘----Geojson数据加载(高级)</a>
+                            <p style="margin:0px;"><a href="/tuiduan2874" class="user_name">tuiduan2874</a>:
+                                您好！最近正在学习Webgis二次开发，看了这个很有帮助~我想看下具体的源代码可以发给我吗？谢谢啦
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/52232483#comments">带你剖析WebGis的世界奥秘----Geojson数据加载(高级)</a>
+                            <p style="margin:0px;"><a href="/wang_sks" class="user_name">wang_sks</a>:
+                                您好，有没有这个篇内容的源码呢？
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/70142752#comments">Spring 集成Kafka(完整版)</a>
+                            <p style="margin:0px;"><a href="/wangta1076" class="user_name">wangta1076</a>:
+                                不是应该inbound吗
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/70142752#comments">Spring 集成Kafka(完整版)</a>
+                            <p style="margin:0px;"><a href="/wangta1076" class="user_name">wangta1076</a>:
+                                为什么消费者的配制里用 &amp;lt;int:outbound-channel-adapter cha...
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/52857144#comments">POI通用导出Excel数据(包括样式设计)</a>
+                            <p style="margin:0px;"><a href="/weixin_35686118" class="user_name">weixin_35686118</a>:
+                                这个是通用的吗
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/62887089#comments">bootstrape select使用小结</a>
+                            <p style="margin:0px;"><a href="/w178191520" class="user_name">w178191520</a>:
+                                bootstrap特效手册：http://www.jqhtml.com/bootstraps-syn...
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/62887089#comments">pdf.js跨域加载文件</a>
+                            <p style="margin:0px;"><a href="/Shadow85" class="user_name">Shadow85</a>:
+                                博主好塞雷
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/62887089#comments">pdf.js跨域加载文件</a>
+                            <p style="margin:0px;"><a href="/lishunwen0825" class="user_name">lishunwen0825</a>:
+                                谢谢博主！解决了我很困惑的事，客户是内部局域网，pdf文档又是放在iis服务下，而且在那边真没法解决...
+                            </p>
+                        </li>
+                        <li>
+
+                            <a href="/u013132051/article/details/23476365#comments">学生管理系统</a>
+                            <p style="margin:0px;"><a href="/CocoWu892" class="user_name">CocoWu892</a>:
+                                作为一个大一新生来说，您很上进，希望你继续努力，有机会可以来我的博客看看，我也刚学计算机。
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div id="custom_column_43272019" class="panel">
+                    <ul class="panel_head"><span>百度统计</span></ul>
+                    <ul class="panel_body">
+                        <html>
+                        <head>
+                        </head>
+                        </html>
+                    </ul>
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+
+            <div class="tracking-ad" data-view="true" data-mod="ad_popu_189" data-mtp="63" data-order="40"
+                 data-con="ad_content_1259" style="width: 250px; height: 500px;">
+                <div id="nav_show_top_stop" style="width: 250px;height: 500px;z-index:1000">
+                    <div id="cpro_u2734133">
+                        <!-- 投放代码 -->
+
+                        <!-- 请置于所有广告位代码之前 -->
+                        <script src="http://dup.baidustatic.com/js/ds.js"></script>
+
+                        <!-- 广告位：PC端-博客详情页-左侧button1-250*250 -->
+                        <script>
+                            (function () {
+                                var s = "_" + Math.random().toString(36).slice(2);
+                                document.write('<div id="' + s + '"></div>');
+                                (window.slotbydup = window.slotbydup || []).push({
+                                    id: '4740887',
+                                    container: s,
+                                    size: '250,250',
+                                    display: 'inlay-fix'
+                                });
+                            })();
+                        </script>
+
+                    </div>
+                    <div id="cpro_u3031286">
+                        <!-- 投放代码 -->
+
+                        <!-- 请置于所有广告位代码之前 -->
+                        <script src="http://dup.baidustatic.com/js/ds.js"></script>
+
+                        <!-- 广告位：PC端-博客详情页-左侧Button2-250*250 -->
+                        <script>
+                            (function () {
+                                var s = "_" + Math.random().toString(36).slice(2);
+                                document.write('<div id="' + s + '"></div>');
+                                (window.slotbydup = window.slotbydup || []).push({
+                                    id: '4740890',
+                                    container: s,
+                                    size: '250,250',
+                                    display: 'inlay-fix'
+                                });
+                            })();
+                        </script>
+
+
+                    </div>
+                </div>
+            </div>
+            <script>
+
+                setTimeout(function () {
+                    var naviga_offsetTop = 0;
+
+                    function naviga_stay_top() {
+                        var scrollTop = jQuery(document).scrollTop();
+                        if (scrollTop > naviga_offsetTop) {
+                            jQuery("#nav_show_top_stop").css({"position": "fixed"});
+                            jQuery("#nav_show_top_stop").css({"top": "0px"});
+                        } else {
+                            jQuery("#nav_show_top_stop").css({"position": "fixed"});
+                            jQuery("#nav_show_top_stop").css({"top": naviga_offsetTop - scrollTop + "px"});
+                        }
+                    }
+
+                    function onload_function() {
+                        naviga_offsetTop = jQuery("#nav_show_top_stop").position().top;
+                        jQuery(window).bind("scroll", naviga_stay_top);
+                        jQuery(window).bind("mousewheel", naviga_stay_top);
+                        jQuery(document).bind("scroll", naviga_stay_top);
+                        jQuery(document).bind("mousewheel", naviga_stay_top);
+                    }
+
+                    jQuery(document).ready(onload_function);
+                }, 200);
+
+            </script>
+
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            function __get_code_toolbar(snippet_id) {
+                return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+            }
+
+            $("[code_snippet_id]").each(function () {
+                __s_id = $(this).attr("code_snippet_id");
+                if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                    __code_tool = __get_code_toolbar(__s_id);
+                    $(this).prev().find(".tools").append(__code_tool);
+                }
+            });
+
+            $(".bar").show();
+        });
+    </script>
+
+
+</div>
+
+
+<script type="text/javascript"
+        src="http://static.blog.csdn.net/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+
+<script src="http://static.blog.csdn.net/scripts/csdn_blog_detail.min.js?v2017.041" type="text/javascript"></script>
+
+<script type="text/javascript" src="http://c.csdnimg.cn/blog/csdn_public_blog_detail.min.js?20170719001"></script>
+
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=2137909"></script>
+
+
+<div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+    <script id="adJs52b5334"></script>
+    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+</div>
+
+<div class="pop_CA_cover" style="display:none"></div>
+<div class="pop pop_CA" style="display:none">
+    <div class="CA_header">
+        收藏助手
+        <span class="cancel_icon" id="fapancle" onclick="$('.pop_CA').hide();$('.pop_CA_cover').hide();"></span>
+    </div>
+    <iframe src="" id="fa" frameborder="0" width="100%" height="360" scrolling="no"></iframe>
+</div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        var fromjs = $("#fromjs");
+        if (fromjs.length > 0) {
+            $("#fromjs .markdown_views pre").addClass("prettyprint");
+            prettyPrint();
+
+            $('pre.prettyprint code').each(function () {
+                var lines = $(this).text().split('\n').length;
+                var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                $(this).addClass('has-numbering').parent().append($numbering);
+                for (i = 1; i <= lines; i++) {
+                    $numbering.append($('<li/>').text(i));
+                }
+                ;
+                $numbering.fadeIn(1700);
+            });
+
+            $('.pre-numbering li').css("color", "#999");
+        }
+    });
+
+    $(".markdown_views a[target!='_blank']").attr("target", "_blank");
+
+    //$(".toc a[target='_blank']").attr("target", "");
+
+    setTimeout(function () {
+        $(".toc a[target='_blank']").attr("target", "");
+    }, 500);
+
+</script>
+
+</body>
+</html>   
